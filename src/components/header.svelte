@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { page } from "$app/stores"
-  import { SignIn, SignOut } from "@auth/sveltekit/components"
+  import { page } from "$app/state"
+  import SignInButton from "$lib/SignInButton.svelte"
+  import { signOut } from "@auth/sveltekit/client"
 </script>
 
 <header>
@@ -8,22 +9,31 @@
     <div class="nojs-show loaded">
       <img
         alt="User avatar"
-        src={$page.data?.session?.user?.image ??
+        src={page.data?.session?.user?.image ??
           `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000) + 1}&randomizeIds=true`}
         class="avatar"
       />
-      {#if $page.data.session}
+      {#if page.data.session}
         <span class="signedInText">
-          {$page.data.session.user?.email ?? $page.data.session.user?.name}
+          {page.data.session.user?.email ?? page.data.session.user?.name}
         </span>
-        <SignOut>
-          <div slot="submitButton" class="buttonPrimary">Sign out</div>
-        </SignOut>
+        <button
+          onclick={() => {
+            signOut()
+          }}
+        >
+          <div class="buttonPrimary">Sign out</div>
+        </button>
       {:else}
         <span class="notSignedInText">You are not signed in</span>
-        <SignIn>
-          <div slot="submitButton" class="buttonPrimary">Sign in</div>
-        </SignIn>
+        <SignInButton
+          provider={{
+            id: "github",
+            name: "GitHub",
+            signinUrl: "/signin",
+            callbackUrl: page.url.href,
+          }}
+        />
       {/if}
     </div>
   </div>
