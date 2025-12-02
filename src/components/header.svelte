@@ -33,7 +33,9 @@
             signinUrl: "/signin",
             callbackUrl: page.url.href,
           }}
-        />
+        >
+          <div class="buttonPrimary">Sign in</div>
+        </SignInButton>
       {/if}
     </div>
   </div>
